@@ -1,13 +1,11 @@
-# STAT 545 Homework Repository - Assignment 1
+# STAT 545 Homework Repo - Assignment 1
 
-# About this repository-
+# About this repo-
 
 This is a repository for STAT 545 Assignment 1. This repo contains a summarization of tools and techniques learnt in Week 1 and Week 2. 
 This is a public repository and anyone is welcome to view the contents of this repo. 
 
+# Introduction 
 
-
-
-
-
-
+My name is Jumi Gogoi. I am a PhD student at the Institute for Resources, Environment and Sustainability (IRES), Faculty of Science. 
+My research interest revolves around the area of climate change and food security. 
