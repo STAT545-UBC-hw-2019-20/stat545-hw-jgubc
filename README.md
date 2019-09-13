@@ -9,5 +9,5 @@ This is a public repository and anyone is welcome to view the contents of this r
 
 My name is Jumi Gogoi. I am a PhD student at the Institute for Resources, Environment and Sustainability (IRES), Faculty of Science. 
 My research interest revolves around the area of climate change and food security. 
-At UBC, I am going to work in the area of using machine learning to understand which farm management practises lead to climate resilient 
+At UBC, I will be working in the area of using machine learning to understand which farm management practises lead to climate resilient 
 yield in the Canadian prairies.
