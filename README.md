@@ -3,7 +3,7 @@
 # _About this repo_
 
 This is a repository for STAT 545 Assignments. This repo contains a summarization of tools and techniques learnt in Week 1 and Week 2. 
-This is a public repository and anyone is welcome to view the contents of this repo. The link to the home page of this account is (https://github.com/STAT545-UBC-hw-2019-20)
+This is a public repository and anyone is welcome to view the contents of this repo. [The link to the home page of this account is} (https://github.com/STAT545-UBC-hw-2019-20)
 
 # Introduction 
 
