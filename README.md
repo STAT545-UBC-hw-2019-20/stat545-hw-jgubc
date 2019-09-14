@@ -10,6 +10,7 @@
 Assignment will cover the following exercises-
 
 | Exercise 1 | Edit README.md                       |
+| ---------- |:------------------------------------:|
 | Exercise 2 | R Markdown for Gapminder exploration |
 | Exercise 3 | R Markdown presentation slides       |  
 
