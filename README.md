@@ -6,7 +6,7 @@
 >This is a **public repository** and anyone is welcome to view the contents of this repo. 
 >[You can access the homepage of UBC STAT545 homework account (2019-20) by clicking on this line.](https://github.com/STAT545-UBC-hw-2019-20)
 
-## Details about contents of Assignment 1
+### Details about contents of Assignment 1
 Assignment will cover the following exercises-
 
 | Exercise 1 | Edit README.md                       |
