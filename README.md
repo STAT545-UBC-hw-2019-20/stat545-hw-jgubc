@@ -8,7 +8,7 @@
 
 #### Details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
 
-#####Assignment will cover the following exercises-
+##### Assignment will cover the following exercises-
 
 | Exercise 1 | Edit README.md                       |
 | ---------- |:------------------------------------:|
