@@ -18,8 +18,8 @@ Note - You can navigate further for more information by clicking on the highligh
 
 ## Introduction 
 
->My name is Jumi Gogoi. I am a PhD student at the Institute for Resources, Environment and Sustainability, [IRES](http://ires.ubc.ca/), Faculty of Science. 
->I will be working in the [LUGE](http://www.ramankuttylab.com/) lab under the supervision of [Dr Navin Ramankutty](https://ires.ubc.ca/person/navin-ramankutty/) 
+>My name is Jumi Gogoi. I am a PhD student at the Institute for Resources, Environment and Sustainability, [(IRES)](http://ires.ubc.ca/), Faculty of Science. 
+>I will be working in the [LUGE](http://www.ramankuttylab.com/) lab under the supervision of [Dr Navin Ramankutty](https://ires.ubc.ca/person/navin-ramankutty/). 
 >My research interest revolves around the area of climate change and food security. 
 >At UBC, I will be working in the area of using machine learning to understand which farm management practises lead to climate resilient 
 yield in the Canadian prairies.
