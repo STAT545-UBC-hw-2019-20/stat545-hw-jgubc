@@ -1,12 +1,12 @@
 # STAT 545 Homework Repo - Assignment 1
 
-## _About this repo_
+## About this repo
 
 >This is a repository for **STAT 545 Assignments**. This repo contains a summarization of tools and techniques learnt in Week 1 and Week 2. 
 >This is a **public repository** and anyone is welcome to view the contents of this repo. 
 >[You can access the homepage of UBC STAT545 homework account (2019-20) by clicking on this line.](https://github.com/STAT545-UBC-hw-2019-20)
 
-### Details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
+#### Details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
 Assignment will cover the following exercises-
 
 | Exercise 1 | Edit README.md                       |
@@ -16,7 +16,7 @@ Assignment will cover the following exercises-
 
 Note - You can navigate further for more information by clicking on the highlighted (blue colored) keywords.
 
-## _Introduction_ 
+## Introduction 
 
 >My name is Jumi Gogoi. I am a PhD student at the Institute for Resources, Environment and Sustainability, [IRES](http://ires.ubc.ca/), Faculty of Science. 
 >I will be working in the [LUGE](http://www.ramankuttylab.com/) lab under the supervision of [Dr Navin Ramankutty](https://ires.ubc.ca/person/navin-ramankutty/) 
