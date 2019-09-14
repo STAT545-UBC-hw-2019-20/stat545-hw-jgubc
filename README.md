@@ -7,12 +7,13 @@
 >[You can access the homepage of UBC STAT545 homework account (2019-20) by clicking on this line.](https://github.com/STAT545-UBC-hw-2019-20)
 
 #### Details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
+
 #####Assignment will cover the following exercises-
 
-#####| Exercise 1 | Edit README.md                       |
-#####| ---------- |:------------------------------------:|
-#####| Exercise 2 | R Markdown for Gapminder exploration |
-#####| Exercise 3 | R Markdown presentation slides       |  
+| Exercise 1 | Edit README.md                       |
+| ---------- |:------------------------------------:|
+| Exercise 2 | R Markdown for Gapminder exploration |
+| Exercise 3 | R Markdown presentation slides       |  
 
 Note - You can navigate further for more information by clicking on the highlighted (blue colored) keywords.
 
