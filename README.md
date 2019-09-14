@@ -4,7 +4,7 @@
 
 This is a repository for **STAT 545 Assignments**. This repo contains a summarization of tools and techniques learnt in Week 1 and Week 2. 
 This is a **public repository** and anyone is welcome to view the contents of this repo. 
-[You can access the link to the homepage by clicking on this line.](https://github.com/STAT545-UBC-hw-2019-20)
+[You can access the link to the homepage of UBC STAT545 homework account (2019-20) by clicking on this line.](https://github.com/STAT545-UBC-hw-2019-20)
 
 ## _Introduction_ 
 
