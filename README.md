@@ -16,4 +16,4 @@ My research interest revolves around the area of climate change and food securit
 At UBC, I will be working in the area of using machine learning to understand which farm management practises lead to climate resilient 
 yield in the Canadian prairies.
 
-![GitHub Logo](/images/logo.png)
+![Alt Text](C:\Users\jgogo\OneDrive\Pictures)
