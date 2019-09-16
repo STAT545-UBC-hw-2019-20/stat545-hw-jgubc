@@ -5,9 +5,10 @@
 
 >This is a repository for **STAT 545 Assignments**. This repo contains a summarization of tools and techniques learnt in STAT 545 in the form of assignments.
 >This is a **public repository** and everyone is welcome to view the contents of this repo. 
+>
 >[You can access the homepage of UBC STAT545 homework account (2019-20) by clicking on this line.](https://github.com/STAT545-UBC-hw-2019-20)
 
-Note - You can navigate further for more information by clicking on the highlighted (blue colored) keywords.
+**Note** - You can navigate further for more information by clicking on the highlighted (**blue colored**) keywords.
 
 >#### Details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
 >##### Assignment will cover the following exercises-
