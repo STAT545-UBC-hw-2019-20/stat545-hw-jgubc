@@ -92,17 +92,17 @@
 
 > ##### The variables **cyl, disp, drat, wt, qsec** are **normally distributed**. (Graphs in order of the variables listed).
 
-![]()
+![](https://raw.githubusercontent.com/STAT545-UBC-hw-2019-20/stat545-hw-jgubc/master/hw01/images/unnamed-chunk-2-1.png)
 
 > ##### The varibales **hp, mpg, gear** and **carb** are **right skewed**. (Graphs in order of the variables listed).
 
-![]()
+![](https://raw.githubusercontent.com/STAT545-UBC-hw-2019-20/stat545-hw-jgubc/master/hw01/images/unnamed-chunk-3-1.png)
 
 ### **Scatterplots (to identify relationship between variables)**
 
 > ##### Below are the sample scatterplots of variables **wt vs mpg** and **wt vs disp**. The variables **wt** and **mpg** is negatively related as the points in the graph show a downhill pattern as we move from left to right while the variables **wt** and **disp** are positively related to each other as the data points for x increase as y values increase.
 
-![]()
+![](https://raw.githubusercontent.com/STAT545-UBC-hw-2019-20/stat545-hw-jgubc/master/hw01/images/unnamed-chunk-4-1.png)
 
 ### **Linear Regression**
 
@@ -133,6 +133,6 @@
 
 ### **Regression plot**
 
-![]()
+![](https://raw.githubusercontent.com/STAT545-UBC-hw-2019-20/stat545-hw-jgubc/master/hw01/images/unnamed-chunk-6-1.png)
 
 > ##### The plot shows the regression line fitted by the model. As the data values lie around this line, this indicates that the model fits the data well.
