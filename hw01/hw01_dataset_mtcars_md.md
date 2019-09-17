@@ -1,12 +1,12 @@
 # A Simple Analysis of Dataset 'mtcars'
 
-> #### This R Markdown document has been created to explore the dataset [mtcars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html) located in the R Datasets Package for [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
+> ### This R Markdown document has been created to explore the dataset [mtcars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html) located in the R Datasets Package for [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
 
-#### **Description of dataset ‘mtcars’**
+### **Description of dataset ‘mtcars’**
 
-> ##### The datatset **‘mtcars’** is a dataset that contains 11 numeric variables with a total of 32 observations. Full description of the dataset can be found [here](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html).
+> #### The datatset **‘mtcars’** is a dataset that contains 11 numeric variables with a total of 32 observations. Full description of the dataset can be found [here](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html).
 
-#### **The variables are:-**
+### **The variables are:-**
 
 > <table>
 > <thead>
@@ -63,7 +63,7 @@
 > </tbody>
 > </table>
 >
-#### **Dataset Structure**
+### **Dataset Structure**
 
 > ##### The **structure** of the dataset can be seen below-
 
@@ -82,13 +82,13 @@
 
 > ##### The variables **vs** (engine) and **am** (Transmission) are factor variables with two levels (0 and 1).
 
-#### **Checking for missing values**
+### **Checking for missing values**
 
 > ##### The **‘anyNA’** function is used to check if the dataset contains any missing values. As the ouput of the function is **FALSE**, it indicates all non-missing values in the dataset.
 
     ## [1] FALSE
 
-#### **Checking for Skewness**
+### **Checking for Skewness**
 
 > ##### The variables **cyl, disp, drat, wt, qsec** are **normally distributed**. (Graphs in order of the variables listed).
 
@@ -98,13 +98,13 @@
 
 ![](hw01_dataset_mtcars_md_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
-#### **Scatterplots (to identify relationship between variables)**
+### **Scatterplots (to identify relationship between variables)**
 
 > ##### Below are the sample scatterplots of variables **wt vs mpg** and **wt vs disp**. The variables **wt** and **mpg** is negatively related as the points in the graph show a downhill pattern as we move from left to right while the variables **wt** and **disp** are positively related to each other as the data points for x increase as y values increase.
 
 ![](hw01_dataset_mtcars_md_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 
-#### **Linear Regression**
+### **Linear Regression**
 
 > ##### We use a simple linear regression function to predict miles/gallon (**mpg** - response variable) travelled from weight (**wt** - predictor variable) of the car (shown below). The analysis is provided in the listing below and the resulting graph is presented.
 
@@ -131,7 +131,7 @@
 >
 > ##### We can also see that the **regression coefficient (-5.3)** is significantly different from zero (p &lt; 0.001) and indicates that there’s an expected decrease of 5.3 units of mpg for every 1 unit increase in wt.
 
-#### **Regression plot**
+### **Regression plot**
 
 ![](hw01_dataset_mtcars_md_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
