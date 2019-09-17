@@ -10,7 +10,7 @@
 
 **Note** - You can navigate further for more information by clicking on the highlighted (**blue colored**) keywords.
 
->#### Details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
+>#### More details about contents of [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/) is here.
 
 ## Introduction 
 
