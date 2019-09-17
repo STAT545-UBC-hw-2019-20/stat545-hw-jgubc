@@ -1,3 +1,0 @@
-# Folder Contents
-
-## 
