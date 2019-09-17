@@ -25,3 +25,5 @@ yield in the Canadian prairies.
 
 ![](https://raw.githubusercontent.com/STAT545-UBC-hw-2019-20/stat545-hw-jgubc/master/hw01/images/World_food_836.jpg)
 
+>Image source- https://www.agri-pulse.com/articles/9203-opinion-food-security-strategy-is-essential-to-our-national-security
+
