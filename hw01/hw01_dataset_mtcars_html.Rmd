@@ -1,0 +1,140 @@
+---
+title: "An Simple Analysis of Dataset 'mtcars'"
+output:
+  html_document: default
+  keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(rmarkdown)
+library(tibble)
+library(DT)
+df = mtcars
+```
+
+>##### This R Markdown document has been created to explore the dataset [mtcars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html) located in the R Datasets Package for [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
+
+
+#### **Description of dataset 'mtcars'**
+>
+>##### The datatset **'mtcars'** is a dataset that contains 11 numeric variables with a total of 32 observations. Full description of the dataset can be found [here](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html).
+>
+
+#### **The variables are:-**
+>
+| Variable | Description |
+|----------|-------------|
+| mpg      | Miles/(US) gallon |
+| cyl      | Number of cylinders |                     
+| disp     | Displacement (cu.in.) |                   
+| hp       | Gross horsepower |                        
+| drat     | Rear axle ratio |                         
+| wt       | Weight (1000 lbs) |                       
+| qsec     | 1/4 mile time |
+| vs       | Engine (0 = V-shaped, 1 = straight) |
+| am       | Transmission (0 = automatic, 1 = manual) |
+| gear     | Number of forward gears |                 
+| carb     | Number of carburetors |   
+>
+
+#### **Dataset Structure**
+>##### The **structure** of the dataset can be seen below-
+>
+```{r mtcars}
+str(mtcars)
+```
+>
+>##### The variables **vs** (engine) and **am** (Transmission) are factor variables with two levels (0 and 1).
+
+
+#### **Checking for missing values**
+>##### The **'anyNA'** function is used to check if the dataset contains any missing values. As the ouput of the function is **FALSE**, it indicates all non-missing values in the dataset.
+
+```{r}
+anyNA(mtcars)
+```
+
+
+
+#### **Checking for Skewness**
+>##### The variables **cyl, disp, drat, wt, qsec** are **normally distributed**. (Graphs in order of the variables listed).  
+
+```{r}
+library(rcompanion)
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(3,2))
+plotNormalHistogram(mtcars$cyl)
+plotNormalHistogram(mtcars$disp)
+plotNormalHistogram(mtcars$drat)
+plotNormalHistogram(mtcars$wt)
+plotNormalHistogram(mtcars$qsec)
+par(opar)
+detach(mtcars)
+```
+
+>##### The varibales **hp, mpg, gear** and **carb** are **right skewed**. (Graphs in order of the variables listed).
+
+```{r}
+library(rcompanion)
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(2,2))
+plotNormalHistogram(mtcars$hp)
+plotNormalHistogram(mtcars$mpg)
+plotNormalHistogram(mtcars$gear)
+plotNormalHistogram(mtcars$carb)
+par(opar)
+detach(mtcars)
+```
+
+
+
+#### **Scatterplots (to identify relationship between variables)**
+>
+>##### Below are the sample scatterplots of variables **wt vs mpg** and **wt vs disp**. The variables **wt** and **mpg** is negatively related as the points in the graph show a downhill pattern as we move from left to right while the variables **wt** and **disp** are positively related to each other as the data points for x increase as y values increase. 
+
+```{r}
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(1,2))
+plot(wt,mpg, main="Scatterplot of wt vs. mpg")
+plot(wt,disp, main="Scatterplot of wt vs. disp")
+par(opar)
+detach(mtcars)
+```
+
+
+
+#### **Linear Regression**
+>
+>##### We use a simple linear regression function to predict miles/gallon (**mpg** - response variable) travelled from weight (**wt** - predictor variable) of the car (shown below). The analysis is provided in the listing below and the resulting graph is presented.
+>
+
+```{r}
+fit <- lm(mpg ~ wt, data=mtcars)
+summary(fit)
+```
+
+>##### We can see from the output that the model fits our data moderately well as indicated by the **Multiple R-squared value** of **0.75**.  This indicates that the model accounts for **75%** of the variance in mpg (miles/gallon).
+>
+>##### We can also see that the **regression coefficient (-5.3)** is significantly different from zero (p < 0.001) and indicates that there’s an expected decrease of 5.3 units of mpg for every 1 unit increase in wt.
+
+#### **Regression plot**
+
+```{r}
+
+plot(mtcars$wt, mtcars$mpg, xlab="wt",ylab="mpg", main = "Regression of Miles per Gallon (mpg) on Weight (wt)" )
+abline(fit)
+```
+
+>
+>##### The plot shows the regression line fitted by the model. As the data values lie around this line, this indicates that the model fits the data well.
+>
+
+
+
+
+
+
