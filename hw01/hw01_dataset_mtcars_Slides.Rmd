@@ -1,0 +1,120 @@
+---
+title: <span style="color:red">A simple analysis of dataset '**mtcars**'</span>
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(rmarkdown)
+library(tibble)
+library(DT)
+df = mtcars
+```
+
+## **Description of dataset [mtcars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html)**
+The dataset '**mtcars**' contains 11 numeric variables with a total of 32 observations.The variables are: 
+<br>
+<br>
+<font size="4">1. **mpg**  -	Miles/(US) gallon</font>
+<br>
+<font size="4">2. **cyl**  - Number of cylinders</font>
+<br>
+<font size="4">3. **disp** - Displacement (cu.in.)</font>
+<br>
+<font size="4">4. **hp**   - Gross horsepower</font>
+<br>
+<font size="4">5. **drat** - Rear axle ratio</font>
+<br>
+<font size="4">6. **wt**   - Weight (1000 lbs)</font>
+<br>
+<font size="4">7. **qsec** - 1/4 mile time</font>
+<br>
+<font size="4">8. **vs**   - Engine (0 = V-shaped, 1 = straight)</font>
+<br>
+<font size="4">9. **am**   - Transmission (0 = automatic, 1 = manual)</font>
+<br>
+<font size="4">10. **gear** - Number of forward gears</font>
+<br>
+<font size="4">11. **carb** - Number of carburetors</font>                   
+
+## Pre-processing data
+
+### **Checking for missing values**
+
+```{r mtcars, echo = TRUE}
+anyNA(mtcars)
+```
+
+<font size="4">The **'anyNA'** function is used to check if the dataset contains any missing values. As the ouput of the function is **FALSE**, it indicates all non-missing values in the dataset.</font>
+
+## Pre-processing data
+
+<font size="5">**Checking for skewness-**</font>
+<br>
+<font size="4">The variables **cyl, disp, drat, wt, qsec** are normally distributed. For example, see below diagram of variables **drat** (left) and **qsec** (right).</font>  
+```{r}
+library(rcompanion)
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(1,2))
+plotNormalHistogram(mtcars$drat)
+plotNormalHistogram(mtcars$qsec)
+par(opar)
+detach(mtcars)
+```
+
+## Pre-processing data
+
+<font size="4">The varibales **hp, mpg, gear** and **carb** are skewed towards the right. For example, see below diagram of varibales **hp** (left) and **mpg** (right).</font> 
+
+```{r}
+library(rcompanion)
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(1,2))
+plotNormalHistogram(mtcars$hp)
+plotNormalHistogram(mtcars$mpg)
+par(opar)
+detach(mtcars)
+```
+
+## **Scatterplots**
+
+<font size="4">Variables **wt** and **mpg** (left) is negatively related as points in the graph show a downhill pattern as we move from left to right while variables **wt** and **disp** (right) are positively related to each other as the data points for x increase as y values increase.</font> 
+```{r}
+attach(mtcars)
+opar <- par(no.readonly=TRUE)
+par(mfrow=c(1,2))
+plot(wt,mpg, main="Scatterplot of wt vs. mpg")
+plot(wt,disp, main="Scatterplot of wt vs. disp")
+par(opar)
+detach(mtcars)
+```
+
+
+## **Linear Regression**
+<font size="4">We use a simple linear regression function to predict miles/gallon (**mpg** - response variable) travelled from weight (**wt** - predictor variable) of the car (shown below).</font>
+```{r, echo = TRUE}
+fit <- lm(mpg ~ wt, data=mtcars)
+```
+<font size="4">The summary of the function is presented in the next slide. We can see from the output that the model fits our data moderately well as indicated by the **Multiple R-squared value** of **0.75**.  This indicates that the model accounts for **75%** of the variance in mpg (miles/gallon).</font> 
+<br>
+<br>
+<font size="4">We can also see that the **regression coefficient (-5.3)** is significantly different from zero
+<br>
+(p < 0.001) and indicates that there’s an expected decrease of 5.3 units of mpg for every 1 unit increase in wt.</font>
+
+## Summary output of Regression model
+```{r} 
+summary(fit)
+```
+
+
+## Regression Plot
+<font size="4">The plot shows the regression line fitted by the model. As the data values lie around this line, this indicates that the model fits our data well.</font> 
+
+```{r}
+plot(mtcars$wt, mtcars$mpg, xlab="wt",ylab="mpg", main = "Regression of Miles/Gallon (mpg) on Weight (wt)" )
+abline(fit)
+```
+
