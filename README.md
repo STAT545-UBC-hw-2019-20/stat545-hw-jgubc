@@ -1,7 +1,7 @@
 # STAT 545 Homework Repo (Term 1 2019)
 
 
-## About this repo
+## About
 
 >This is a repository for **STAT 545 Assignments**. This repo contains a summarization of tools and techniques learnt in STAT 545 in the form of assignments.
 >This is a **public repository** and everyone is welcome to view the contents of this repo. 
