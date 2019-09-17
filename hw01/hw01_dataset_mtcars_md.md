@@ -1,4 +1,6 @@
-> ##### This R Markdown document has been created to explore the dataset [mtcars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html) located in the R Datasets Package for [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
+# A Simple Analysis of Dataset 'mtcars'
+
+> #### This R Markdown document has been created to explore the dataset [mtcars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html) located in the R Datasets Package for [Assignment 1](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
 
 #### **Description of dataset ‘mtcars’**
 
