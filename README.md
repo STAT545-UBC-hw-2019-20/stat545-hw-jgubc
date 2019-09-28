@@ -13,6 +13,7 @@
 >
 >#### More details about Assignment 1 is [here](https://stat545.stat.ubc.ca/evaluation/hw01/hw01/)
 >#### More details about Assignment 2 is [here](https://stat545.stat.ubc.ca/evaluation/hw02/hw02/) 
+>#### More details about Assignment 3 is [here](https://stat545.stat.ubc.ca/evaluation/hw03/hw03/)
 >
 
 ## Introduction 
