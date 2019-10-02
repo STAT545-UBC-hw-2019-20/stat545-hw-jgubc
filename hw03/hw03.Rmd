@@ -1,0 +1,252 @@
+---
+title: "Exploration & Visualizations of 'Gapminder' data"
+author: "Jumi Gogoi"
+date: "01/10/2019"
+output: 
+  html_document:
+    keep_md: true
+    theme: paper
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(rmarkdown)
+library(tibble)
+library(DT)
+library(tidyverse)
+library(tsibble)
+library(scales)
+library(dplyr)
+library(gapminder)
+library(reshape2)
+```
+
+>#### **Quick Summary** - The 'Gapminder' dataset contains observations on socio-economic variables (GDP per capita, Life Expectancy and Population) for all countries in 5 continents between years 1952 - 2007 (inclusive) recorded every five years. Table 1 summarizes the number of countries in each continent and associated number of observations respectively. 
+
+```{r}
+count <- gapminder %>%
+  group_by(continent) %>%
+  summarise(observations = n(),
+            countries = n_distinct(country))
+knitr::kable(count, booktabs = TRUE, align = 'r', caption = "Table 1 : Summary table of continents") 
+```
+
+
+>### **TASK 2 - Highest and Lowest GDP per Capita for continents**
+>
+>##### **Table 2** below summarizes the estimates of location and estimates of variability of GDP per capita including highest and lowest GDP/capita in all continents. The time period of this analysis is 1952-2007 and the basic idea here is to get a typical value for each continent for the variable '**gdpPerCap**'. 
+
+```{r}
+t2 <- gapminder %>% 
+  select(continent, gdpPercap) %>% 
+  group_by(continent) %>%
+  summarise(MedianGDP = round(median(gdpPercap),2),
+        Lowest_GDP = round(min(gdpPercap),2), Highest_GDP = round(max(gdpPercap),2), 
+        Range = Highest_GDP - Lowest_GDP)
+knitr::kable(t2, align = 'r', caption = "Table 2 : Summary table of GDP per capita of Continents")
+```
+
+>##### The **highest and lowest income levels** experienced in the continents is calculated to estimate dispersion (**Range**) in GDP per capita between 1952 and 2007. Dispersion is highest ($113192) for Asia where lowest income per person is $331 and highest is $113523 representing high inequality in the standard of living. A similar trend is seen in countries of Europe where lowest income is $973 per person and highest is $49357. The lowest GDP per capita ($241) is experienced in Africa but their highest of $21951 is also low in comparsion to higher per person income experienced in other continents, hence resulting in the lowest dispersion value. But one must remember that range is sensitive to extreme values and being dependent on just two values (highest and lowest) doesn't truly reflect the dispersion of the bulk of dataset. 
+
+```{r}
+ggplot(gapminder, aes(x=continent, y=gdpPercap)) + 
+  geom_boxplot(alpha = 0.3, fill = 'lightgreen') +
+  labs(title = "Figure 1 - Boxplot of Continent by per capita GDP")
+```
+
+>##### Above (Fig 1) is a boxplot visualizing the distribution of GDP/capita in continents. Countries in Europe show the greatest spread. One can observe outliers in all continents and in Asia, we can see the greatest number of outliers. For Asia, the outlier at the highest point (i.e. $113523) is the maximum GDP/capita observed. Similarly for countries in Africa, America, Europe and Oceania, the outlier at the highest point reflects the highest GDP/capita in that continent.  
+
+>### **TASK 3 - Spread of GDP per Capita within continents**
+>
+>##### **Estimates of Variability** - The key objective in estimating measures of spread/dispersion (Range, Inter-quartile range and Standard deviation) is to understand how similar or varied the observed values of GDP per capita are within continents between 1952 -2007. We look at spread individually for each continent and the results are summarized in a table and with a plot of highest and lowest GDP per capita levels that visually gives us an idea of the range in income in each continent. **The area between the trend line representing max gdp/capita and line representing min gdp/capita is the Range measuring the amount of dispersion**. In the plots (Fig 2 - Fig 6), an average trend line has been included to represent changes in per person income relative to maximum and minimum incomes per person. 
+>
+>#### **Africa**
+>##### One can observe from the plot that from the 1950s the dispersion in income per person gradually starts increasing until the 1960s after which there is a very steep increase in dispersion until mid 1970s. Between mid 1970s and 1980s, dispersion in income decreases steeply again for another decade. Between mid 1980s and late 2000s, we can see short-term fluctuating trends of increase followed by decrease in dispersion of per person income. During the entire 50 year analysis period, the average income per person (represented by the green trend line) stay very close to lower levels of income per person only gradually increasing after the year 2000.   
+
+```{r}
+# AFRICA
+Af_Spread <- gapminder %>%
+  filter(continent == 'Africa') %>% 
+  group_by(year) %>% 
+  summarise(MAX_GDP = round(max(gdpPercap),2), MIN_GDP = round(min(gdpPercap),2),
+            Avg = round(mean(gdpPercap),2),
+            Af_Range = MAX_GDP - MIN_GDP,
+           Af_SD = round(sd(gdpPercap),2), 
+            Af_IQR = round(IQR(gdpPercap),2), 
+            Af_mad = round(mad(gdpPercap),2))
+
+year <- Af_Spread$year
+
+df_af <- data.frame(year, Af_Spread$MAX_GDP, Af_Spread$Avg, Af_Spread$MIN_GDP)
+d_af = melt(df_af, id = c("year"))
+ggplot(d_af)+ geom_line(aes(x=year, y=value, colour=variable)) +
+  scale_color_manual(values = c("darkred", "darkgreen", "steelblue"))+
+  xlab("Year")+ ylab("GDP/Capita")+ labs(title="Figure 2- Spread of GDP per capita for AFRICA") 
+```
+
+>##### **Table 3 - Spread statistics for Africa**
+
+```{r}
+s1 <- data.frame(year, Af_Spread$Af_Range, Af_Spread$Af_IQR ,Af_Spread$Af_SD, Af_Spread$Af_mad)
+DT::datatable(s1, colnames = c('Year', 'Range', 'IQR', 'Standard Deviation', 'Median absolute deviation'), options = list(pageLength = 5))
+```
+
+
+>#### **America**
+>
+>##### In the case of American countries, one can observe that between 1950s and late 2000s, dispersion in income per person has gradually increased. During this 50 year period, average income per person starts off closer to the lower income levels but sees an gradual increase as the years go on moving away from the lower levels of per person income. 
+
+```{r}
+Am_Spread <- gapminder %>%
+  filter(continent == 'Americas') %>% 
+  group_by(year) %>% 
+  summarise(MAX_GDP = round(max(gdpPercap),2), MIN_GDP = round(min(gdpPercap),2),
+            Am_Range = MAX_GDP - MIN_GDP, 
+            Avg = round(mean(gdpPercap),2),
+            Am_SD = round(sd(gdpPercap),2), 
+            Am_IQR = round(IQR(gdpPercap),2), 
+            Am_mad = round(mad(gdpPercap),2))
+df_am <- data.frame(year, Am_Spread$MAX_GDP, Am_Spread$Avg, Am_Spread$MIN_GDP)
+d_am = melt(df_am, id = c("year"))
+ggplot(d_am)+ geom_line(aes(x=year, y=value, colour=variable)) +
+  scale_color_manual(values = c("darkred", "darkgreen", "steelblue"))+
+  xlab("Year")+ ylab("GDP/Capita")+ labs(title="Figure 3- Spread of GDP per capita for AMERICA")
+```
+
+>##### **Table 4 - Spread statistics for America**
+
+```{r}
+s2 <- data.frame(year, Am_Spread$Am_Range, Am_Spread$Am_IQR ,Am_Spread$Am_SD, Am_Spread$Am_mad)
+DT::datatable(s2, colnames = c('Year', 'Range', 'IQR', 'Standard Deviation', 'Median absolute deviation'), options = list(pageLength = 5))
+```
+
+
+>#### **Asia**
+>
+>##### Countries in Asia display a very interesting trend in dispersion between 1952 - 2007 (Fig 4). Dispersion in income per person is very high (people earning low income are almost earning nothing) until mid 1950s when dispersion decreases steeply for another decade (until mid 1960s) followed again by a steep increase until early 1970s. In the next 15-20 years until late 1980s, we only see a decrease in dispersion of per person income. However during this period, the average income per person does not increase and remain closer to the income enjoyed by a person in the lower income levels. After the late 1980s and until the end of the analysis period (2007), we see trends of short increase periods followed by short decrease periods in income disperson. An interesting feature in the plot is the blue line representing the minimum per capita gdp which remains close to zero (horizontal line - no trend) during the 50 year period. It simply tells us that changes in income levels did not have a major impact on the income experienced by people in the lowest income category. 
+
+
+```{r}
+# ASIA
+As_Spread <- gapminder %>%
+  filter(continent == 'Asia') %>% 
+  group_by(year) %>% 
+  summarise(MAX_GDP = round(max(gdpPercap),2), MIN_GDP = round(min(gdpPercap),2),
+            As_Range = MAX_GDP - MIN_GDP, 
+            Avg = round(mean(gdpPercap),2),
+            As_SD = round(sd(gdpPercap),2), 
+            As_IQR = round(IQR(gdpPercap),2), 
+            As_mad = round(mad(gdpPercap),2))
+df_as <- data.frame(year, As_Spread$MAX_GDP, As_Spread$Avg, As_Spread$MIN_GDP)
+d_as = melt(df_as, id = c("year"))
+ggplot(d_as)+ geom_line(aes(x=year, y=value, colour=variable)) +
+  scale_color_manual(values = c("darkred", "darkgreen", "steelblue"))+
+  xlab("Year")+ ylab("GDP/Capita") + labs(title="Figure 4- Spread of GDP per capita for ASIA")
+```
+
+>##### **Table 5 - Spread statistics for Asia**
+
+```{r}
+s3 <- data.frame(year, As_Spread$As_Range, As_Spread$As_IQR ,As_Spread$As_SD, As_Spread$As_mad)
+DT::datatable(s3, colnames = c('Year', 'Range', 'IQR', 'Standard Deviation', 'Median absolute deviation'), options = list(pageLength = 5))
+```
+
+
+>#### **Europe**
+>
+>##### In the European countries, dispersion in income per person (Fig 5) has gradually increased between 1950s and early 1990s after which we see a steep increase in dispersion until end of the analysis period. However, during this 50 year period the average income per person has changed in accordance to the changes in the highest per person income and lowest per person income.     
+
+```{r}
+# EUROPE
+Eu_Spread <- gapminder %>%
+  filter(continent == 'Europe') %>% 
+  group_by(year) %>% 
+  summarise(MAX_GDP = round(max(gdpPercap),2), MIN_GDP = round(min(gdpPercap),2),
+            Eu_Range = MAX_GDP - MIN_GDP,
+            Avg = round(mean(gdpPercap),2),
+            Eu_SD = round(sd(gdpPercap),2), 
+            Eu_IQR = round(IQR(gdpPercap),2), 
+            Eu_mad = round(mad(gdpPercap),2))
+df_eu <- data.frame(year, Eu_Spread$MAX_GDP, Eu_Spread$Avg, Eu_Spread$MIN_GDP)
+d_eu = melt(df_eu, id = c("year"))
+ggplot(d_eu)+ geom_line(aes(x=year, y=value, colour=variable)) +
+  scale_color_manual(values = c("darkred", "darkgreen", "steelblue"))+
+  xlab("Year")+ ylab("GDP/Capita")+ labs(title="Figure 5- Spread of GDP per capita for EUROPE") 
+```
+
+>##### **Table 6 - Spread statistics for Europe**
+
+```{r}
+s4 <- data.frame(year, Eu_Spread$Eu_Range, Eu_Spread$Eu_IQR ,Eu_Spread$Eu_SD, Eu_Spread$Eu_mad)
+DT::datatable(s4, colnames = c('Year', 'Range', 'IQR', 'Standard Deviation', 'Median absolute deviation'), options = list(pageLength = 5))
+```
+
+
+>#### **Oceania**
+>
+>##### Just like in Asia, countries in Oceania display an interesting dispersion trend (Fig 6). There is a very low dispersion in income per person when we start off at 1952 and absolutely no dispersion in income during 1967 and 1968. After the 1968 period, dispersion in per person income increases very minimally until mid 1980s when we see a rapid increasing trend in income dispersion. Also, during this 50 year period the average income per person has changed similarly to the changes in the highest per person income and lowest per person income. Ony for countries in Oceania, both minimum and maximum gdp/capita has increased between 1952 - 2007.  
+
+```{r}
+# OCEANIA
+Oc_Spread <- gapminder %>%
+  filter(continent == 'Oceania') %>% 
+  group_by(year) %>% 
+  summarise(MAX_GDP = round(max(gdpPercap),2), MIN_GDP = round(min(gdpPercap),2),
+            Oc_Range = MAX_GDP - MIN_GDP, 
+            Avg = round(mean(gdpPercap),2),
+            Oc_SD = round(sd(gdpPercap),2), 
+            Oc_IQR = round(IQR(gdpPercap),2), 
+            Oc_mad = round(mad(gdpPercap),2))
+year<- Oc_Spread$year
+df_oc <- data.frame(year, Oc_Spread$MAX_GDP, Oc_Spread$Avg, Oc_Spread$MIN_GDP)
+d_oc = melt(df_oc, id = c("year"))
+ggplot(d_oc)+ geom_line(aes(x=year, y=value, colour=variable)) +
+  scale_color_manual(values = c("darkred", "darkgreen", "steelblue"))+
+  xlab("Year")+ ylab("GDP/Capita") + labs(title="Figure 6- Spread of GDP per capita for OCEANIA")
+```
+
+>##### **Table 7 - Spread statistics for Oceania**
+
+```{r}
+s5 <- data.frame(year, Oc_Spread$Oc_Range, Oc_Spread$Oc_IQR ,Oc_Spread$Oc_SD, Oc_Spread$Oc_mad)
+DT::datatable(s5, colnames = c('Year', 'Range', 'IQR', 'Standard Deviation', 'Median absolute deviation'), options = list(pageLength = 5, autoWidth = FALSE))
+```
+
+>### **TASK 5 - Change in life expectancy over time on different continents**
+>
+>##### To measure a cumulative change in life expectancy between 1952 - 2007 on all continents, mean and median estimates (comparison table at the bottom) have been estimated and trend lines have been used to represent such changes in a plot. The median estimate is not influenced by outliers as in the case of mean and hence is used here to check for a difference between median and mean values and corresponding changes in trends of life expectancy. 
+>
+>##### **Average change over time (Fig 7)** - As we start off at 1952, Africa and Asia has the lowest average life expectancy levels below 50 years. Countries in Oceania and Europe have the highest average life expectancy between 65 and 70 years in 1952 and life expectancy continue to show an increasing trend as time progresses nearing 80 years in average age as we reach 2007. Asian and American countries also show a similar increasing trend in average life expectancy between 1952-2007. Only in the case of African countries, the average growth in life expectancy has been slower and shows an plateau and slow fall in life expectancy between 1990 and 2000. At the end of our analysis period in 2007, average life expectancy in African countries remains at 55 years of age. 
+
+```{r}
+change <- gapminder %>% 
+  group_by(continent,year) %>% 
+  summarize(meanLE = round(mean(lifeExp),2),
+            medianLE = round(median(lifeExp,2)))
+
+change %>% 
+  ggplot(aes(year, meanLE, group = continent, colour = continent)) +
+  geom_line()+
+  scale_color_manual(values = c("red", "darkgreen", "steelblue", "gold", "darkred"))+
+  xlab("Year")+ ylab("Average Life Expectancy")+ labs(title="Figure 7- Change in Average Life Expectancy for Continents between 1952-2007") 
+```
+
+>##### **Median change over time** - Using median (Fig 8) as a measure to understand changes in life expectancy over time, one can observe that there are minor variations in trends of continents when compared to the earlier plot (Fig 7). The position of the continents in the plot does not change but there are visible minor trend fluctuations over time. For countries in Oceania (highest life expectancy levels) and Africa (lowest life expectancy levels), the average and median change in life expectancy remain almost similar. 
+>##### For countries in Europe, America and Asia, the median life expectancy differs from the average value at the beginning of the analysis period (1950). This change continues as we move along the years. The median values for European countries coincide with median values of countries in Oceania in two places, in years 1967 and 1987. For Asian countries, the median life expectancy almost reaches as high as the median life expectancy of American countries after 1990s.
+
+```{r}
+change %>% 
+  ggplot(aes(year, medianLE, group = continent, colour = continent)) +
+  geom_line()+
+  scale_color_manual(values = c("red", "darkgreen", "steelblue", "gold", "darkred"))+
+  xlab("Year")+ ylab("Median Life Expectancy")+ labs(title="Figure 8- Change in Median Life Expectancy for Continents between 1952-2007") 
+```  
+
+>##### **To conclude**, using mean and median estimates to measure changes in life expectancy in continents over time shows one the quality of life in different continents. Median values differ from average values for some continents as average values tend to be affected more by presence of outliers. Additionally, life expectancy can be related with income enjoyed per person. Higher the income enjoyed by the person, generally higher is the average life span observed (Europe, Oceania, America). If a person starts off with a low income without a stable increase over time, quality of life including life span does not show a great improvement in the long term (Africa).
+
+>##### **Comparison table of mean and median values**
+
+```{r}
+DT::datatable(change, colnames = c('Continent','Year','Mean Life Expectancy', 'Median Life Expectancy'), options = list(pageLength = 5))
+```
+
