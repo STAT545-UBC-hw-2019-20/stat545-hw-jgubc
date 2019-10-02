@@ -1,1 +1,1 @@
-This folder contains files associate with HW03.
+This folder contains files associated with HW03.
