@@ -1,0 +1,138 @@
+---
+title: "Tidying and Joining with 'Gapminder' Data"
+author: "Jumi Gogoi"
+date: "08/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rmarkdown)
+library(tibble)
+library(DT)
+library(tidyverse)
+library(tsibble)
+library(scales)
+library(dplyr)
+library(gapminder)
+library(reshape2)
+library(ggplot2)
+```
+
+>### The "**Gapminder**" dataset is used for data re-shaping and plotting exercises in this assignment. Below is a quick glimpse of the dataset -
+
+```{r}
+DT::datatable(gapminder, colnames = c('Country', 'Continent', 'Year', 'Life Expectancy', 'Population', 'GDP per Capita'),options = list(pageLength = 5))
+```
+
+>### Exercise 1 - Univariate option 1
+>##### **1. Long to wide format -** The countries, Australia, Canada and Denamrk, have been selected for data reshaping in this exercise. The dataframe 'Gapminder' is in a long format (more rows). The goal here is to convert the data in a long format into a short and wide format. The columns 'Australia', 'Canada' and 'Denmark' represent the life expectancy values in these countries between years 1952 and 2007. 
+
+```{r}
+#1.  selecting three countries for wider tibble
+d1 <- gapminder %>% 
+  filter(country == 'Canada' | country == 'Australia' | country == 'Denmark') %>% 
+  select(year, country, lifeExp) %>% 
+  pivot_wider(id_cols = year,
+              names_from = country,
+              values_from = lifeExp)
+knitr::kable(d1, booktabs = TRUE, align = 'r', caption = "Table : Wide Dataframe - Life Expectancy") 
+```
+
+>##### **2. Plotting wider dataframe- ** Below is scatterplot of life expectancy by year for the selected countries. All three countries show an increasing trend in life expectancy as we move from left to right. Both Australia and Canada start off with a lower life expectancy value (69 and 68) in 1952 compared to the beginning value for Denmark (70). At the end of the analysis period in 2007, Australia holds the highest life expectancy followed by Canada and Denmark. 
+>##### In the plot, note four intersection points between countries at various points in time. These intersections reflect the same level of life expectancy in both countries during that specific time period. Intersection points - Denmark & Canada in 1978, Denmark & Australia in 1982 and Australia & Canada in 1959 and 1996. 
+>##### (**Note - Since we are plotting a wider dataframe, we are calling mulitple geom_point() amd geom_line() function to plot individually for each country.**)
+
+```{r}
+#2. scatter plot
+ggplot(d1) +
+  geom_point(aes(x=year, y=Australia, colour="Australia"), size=2)+
+  geom_line(aes(x = year,y=Australia, colour="Australia"))+
+  geom_point(aes(x=year, y=Canada, colour="Canada"),  size=2)+
+  geom_line(aes(x = year,y=Canada, colour="Canada"))+
+  geom_point(aes(x=year, y=Denmark, colour="Denmark"),  size=2)+
+  geom_line(aes(x = year,y=Denmark, colour="Denmark"))+
+  scale_colour_manual(name="Country",values=c(Australia="darkred", Canada="steelblue", Denmark="darkgreen"))+
+  labs(x="Year", y="Life Expectancy", title = "Plot of Life Expectancy by year for Australia, Canada & Denmark")
+```
+
+>##### **3. Re-lengthening to longer dataframe - ** Below is data in a longer format. The life expectancy values for the countries for all years is stacked on top of each other resulting in a longer dataframe. 
+
+```{r}
+#3. Re-lengthen data
+d2 <- d1%>% pivot_longer(cols = -year,
+             names_to = "country",
+             values_to = "lifeExp") %>% 
+  arrange(country)
+DT::datatable(d2,options = list(pageLength = 5))
+```
+
+>### Exercise 2 - Multivariate option 1
+>##### **1. Long to wide format -** The table below shows life expectancy and GDP per capita values over years for countries Australia, Canada and Denmark in a wider format. The dataframe has more columns per variable and country making it wider. For each year, we can see the life expectancy and GDP per capita values for the selected countries in a single row. 
+
+```{r}
+#1. tibble
+dw <- gapminder %>% 
+  filter(country == 'Canada' | country == 'Australia' | country == 'Denmark') %>% 
+  select(year, country, lifeExp, gdpPercap) %>% 
+  pivot_wider( id_cols = year,
+              names_from = country,
+              names_sep = "_",
+              values_from = c(lifeExp, gdpPercap))
+knitr::kable(dw, booktabs = TRUE, align = 'r', caption = "Table: Wide Dataframe - Life Expectancy and GDP per capita")
+```
+
+>##### **2. Re-lengthening to longer dataframe -** The wider dataframe from above is now converted back to a longer dataframe with more rows.
+
+```{r}
+#2. Re-lengthen
+dl <- dw %>% 
+  pivot_longer(cols = -year,
+               names_to = c(".value", "country"),
+               names_sep = "_") %>% 
+  arrange(country)
+DT::datatable(dl,options = list(pageLength = 5))
+```
+
+>### Exercise 3 - Table joins
+
+```{r}
+guest <- read_csv("https://raw.githubusercontent.com/STAT545-UBC/Classroom/master/data/wedding/attend.csv")
+email <- read_csv("https://raw.githubusercontent.com/STAT545-UBC/Classroom/master/data/wedding/emails.csv")
+```
+
+>##### **3.1 For each guest in the guestlist (guest tibble), add a column for email address, which can be found in the email tibble.**
+>##### To answer the question above, firstly we separate the names in the guest column in the email tibble such that each name has its own row and an associated email address. Additionally, the column 'guest' is renamed to 'name' so that we have matching column names in both tibbles. The result of manipulations in the 'email' tibble is assigned to a new tibble called 'new_email'. 
+>##### In the next step, we use a left_join() function to join 'guest' and 'new_email' tibble by variable 'name' to return all guest names (30 people) with their corresponding email addresses that can be found in the email tibble. 
+ 
+```{r}
+# renaming columns ('guest' => 'name') in 'email' tibble and making a new tibble
+names(email) <- c("name", "email")
+new_email <- email %>% 
+  separate_rows(name, sep = ", ")
+DT::datatable(new_email,options = list(pageLength = 5))
+
+email1 <- guest %>% 
+  left_join(new_email, by= "name")
+DT::datatable(email1,options = list(pageLength = 5))
+```
+
+>##### **3.2 Who do we have emails for, yet are not on the guestlist?**
+>##### Using an anti-join function on the tibbles by common variable 'name', we can see that there are 3 people who have email addresses in the new_email tibble but are not in the guestlist.
+
+```{r}
+email2 <- new_email %>% 
+  anti_join(guest, by = "name")
+DT::datatable(email2,options = list(pageLength = 5))
+```
+
+
+>##### **3.3 Make a guestlist that includes everyone we have emails for (in addition to those on the original guestlist).**
+>##### To make a guestlist that includes every person for whom we have emails and everyone on the original guestlist, we use a full join function. This function will return all rows and all columns from both tibbles. In case of non-matching values, we can see a blank entry in the datatable. Thus, with a full join, we end up with a table with 33 observations (30 observations from guestlist and 3 more observations from new_email that are not in guestlist). 
+
+```{r}
+email3 <- new_email %>%  
+  full_join(guest, by = "name")
+DT::datatable(email3,options = list(pageLength = 5))
+```
+
