@@ -8,7 +8,7 @@
 
 ## Option 1 - HTML output
 
-> **Answers to homework 03 can be viewed in a GitHub page by clicking on the following link** - 
+> **Answers to homework 03 can be viewed in a GitHub page by clicking on the following link** - https://stat545-ubc-hw-2019-20.github.io/stat545-hw-jgubc/hw04/hw04.html
 >
 
 ## Option 2 - Downloading the files (Rmd and html)
