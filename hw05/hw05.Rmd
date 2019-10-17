@@ -1,0 +1,317 @@
+---
+title: "Factor and Figure Management"
+author: "Jumi Gogoi"
+date: "17/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rmarkdown)
+library(tibble)
+library(DT)
+library(tidyverse)
+library(tsibble)
+library(scales)
+library(dplyr)
+library(gapminder)
+library(reshape2)
+library(ggplot2)
+library(forcats)
+library(here)
+library(cowplot)
+
+```
+
+>### **Exercise 1 - Significance of the here::here package**
+>##### - The here::here package helps the user to easily figure out the highest level of the current working project.
+>##### - Using the package, the path root of the working file is set to the path representing the top level of the current working project.
+>##### - Calling just one line of code, i.e., here(), one can instantly know the top-level of the current working project at any time.  
+>##### - How it works - When here() function is called, it looks at the working directory, checks a criteria and if it is not met, it moves up the parent directory and checks for the criteria again. This process continues until the criteria is met when the resulting working level of the current project is displayed. The selection criteria has been fixed by the package developers which can be seen [here](https://github.com/jennybc/here_here).
+>##### - This package also allows the user to access content in subdirectories in one line of code. That is the user can develop a path to a file/text/image inside a subdirectory and likewise use it. 
+>##### Example to build a path - here (“mainfolder”, “subfolder”, “filename”)
+>##### - To conclude, the here::here package works similarly as file.path() does but eliminates the problems associated with manually manipulating project paths where associated source files are stored. 
+
+
+>### **Exercise 2- Factor Management**
+>##### For this task, I have choosen the 'Gapminder' dataset which contains two factor variables - country and continent.
+>##### The class function informs us about the class type of 'continent' and the levels function lists the name of the levels associated with 'continent'. The fct_count function counts the number of observations associated with each level of 'continent'.
+
+```{r}
+#checking class type and number of factor levels of 'continent'
+class(gapminder$continent)
+levels(gapminder$continent)
+
+# counting number of observation associated with each factor
+knitr::kable(fct_count(gapminder$continent))
+```
+
+>##### Below, we drop 'Oceania' from our dataset. In the datatable below, one can see that observations associated with 'Oceania' no longer appears in our new dataset 'gap_cont'. 
+
+```{r}
+# dropping 'Oceania'
+gap_cont <- gapminder %>%
+  filter(continent %in% c("Africa", "Americas", "Asia", "Europe"))
+DT::datatable(gap_cont, options = list(pageLength = 5))
+```
+
+>##### But, when we check for the number of levels of continent in dataset 'gap_cont', we can see still see that number of levels has not changed, i.e. we still have 5 levels of continents as in our original dataset.  
+
+```{r}
+nlevels(gap_cont$continent)
+```
+
+>##### From above, we note that dropping all rows associated with factor level 'Oceania' did not change the total number of factor levels leaving us with unused factor levels. To drop such unused factor levels, we use droplevels() functions which handles all factors in a dataframe. Using the function, we get the desired output of 4 levels.
+
+```{r}
+# droplevels() to drop unused levels   
+cont_dropped <- gap_cont %>% droplevels()
+nlevels(cont_dropped$continent)
+levels(cont_dropped$continent)
+```
+
+>#### **Reordering levels of 'Continent'** 
+>##### Choosing the continent of 'Americas'and life expectancy to manipulate order of factor levels and calculating some basic statistics over all years (1952-2007). The table below shows American countries arranged by maximum life expectancy - highest to lowest life expectancy. 
+
+```{r}
+am <- cont_dropped %>% 
+  filter(continent == "Americas") %>%
+  group_by(country) %>% 
+  summarise(maxle = max(lifeExp),
+            minle = min(lifeExp),
+            avgle = mean(lifeExp)) %>% 
+  arrange(desc(maxle))
+DT::datatable(am %>% select(country, maxle, minle) %>%  arrange(desc(maxle)),options = list(pageLength = 5))
+```
+
+>#### **Cluttered Visualization - Two statistical values in one chart**  
+>##### Plotting minimum and maximum life expectancy in one chart, we can see that the visualization looks cluttered with two values. Hence, we try to visualize one statistic per graph in the next attempt.
+
+```{r, fig.width=6, fig.height=3, fig.align= 'center'}
+ggplot(am)+
+ geom_point(aes(x= minle, y=fct_reorder(country, maxle), colour="minLifeExp"))+
+ geom_point(aes(x= maxle, y=country, colour = "maxLifeExp"))+
+ scale_colour_manual(name="Life Expectancy",values=c(minLifeExp="darkred", maxLifeExp="steelblue"))+
+  labs(x="Life Expectancy", y="Country", title = "Life Expectancy - American countries")
+```
+
+>#### **Uncluttering - one statistical value per chart** 
+>#### **Ordering countries by Max Life Expectancy** 
+>##### Figure A shows unordered rankings of countries which makes for a cluttered visualization and leaves the reader shuffling between both axes to hunt down specific information. Figure B on the other hand shows countries ordered by maximum life expectancy over the years and one can clearly see that Canada holds the highest life expectancy and Haiti the lowest between 1952-2007. The ordering of countries using fct_reorder() to map lowest to highest position on the y-axis makes it easier to locate a country's ranking and corresponding life expectancy value.
+
+```{r, fig.width= 10}
+am1 <- ggplot(am, aes(x = maxle, y = country)) + geom_point()+ labs(x="Max Life Expectancy", y="Country", title = "Unordered")
+am2 <- ggplot(am, aes(x = maxle, y = fct_reorder(country, maxle))) +geom_point() + labs(x="Max Life Expectancy", y="Country", title = "Ordered(country, maxLifeExp)")
+plot_grid(am1, am2, labels = c('A', 'B')) 
+```
+
+>#### **Max Life Expectancy Vs Avg Life Expectancy **
+>##### Additionally, I wanted to check if country rankings change when countries are ordered by average life expectancy (Fig D). One can see that ordering countries by average values does change the position of countries on the x axis except for Canada (highest value) and Haiti (lowest value) whose position remain unchanged for the extremes. 
+>##### Here, I wanted to play with shape representing life expectancy and have used bars instead of points to make a different visualization than above.  
+
+```{r, fig.width= 10}
+am22 <- ggplot(am)+ geom_col(aes(x = fct_reorder(country, maxle), y = maxle)) + 
+  labs(x="Country", y="Max Life Expectancy", title = "Ordered (country,maxLifeExp)") +
+  theme(axis.text.x = element_text(angle = 90,vjust = 0.5, hjust=1, size=8))
+                                  
+am3 <- ggplot(am)+ geom_col(aes(x = fct_reorder(country, avgle), y =avgle)) + 
+  labs(x="Country", y="Avg Life Expectancy", title = "Ordered (country, AvgLifeExp)") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5,  hjust=1, size=8))
+                                  
+plot_grid(am22, am3, labels = c('C', 'D'))
+```
+
+>### Exercise 3- File I/O
+>
+>##### **Minor analysis before I/O-** Carrying out some basic analysis on the 'European' continent to filter out a subset of data for exporting and importing and further analysis. Here, I am creating own factor levels based on average life expectancy values (between 1952-2007) to identify countries that fall in following life expectancy levels - "very low", "low", "moderate", "high", "very high".   
+
+```{r, fig.width= 10}
+## creating own levels to select countries for further analysis
+eu_subs <- cont_dropped %>% 
+  filter(continent == 'Europe') %>% 
+  group_by(country) %>% 
+   summarise (avgLE = round(mean(lifeExp),2),
+               avgGDP = round(mean (gdpPercap),2)) %>% 
+    mutate(life_level = factor(
+                      case_when(avgLE < 23 ~ "very low",
+                                avgLE < 48 ~ "low",
+                                avgLE < 49 ~ "moderate",
+                                avgLE < 70 ~ "high" ,
+                                TRUE ~ "very high") ,
+                      levels = c("very low", "low", "moderate", "high", "very high"))) 
+DT::datatable(eu_subs, options = list(pageLength = 5))
+```
+
+>##### One can see in the table above that all 30 European countries fall into either 'high' or 'very high' life levels with high average per capita GDP values. To select countries for I/O and further analysis, I am using quadrant analysis to filter countries whose average GDP per capita is greater than $20,000 and average life expectancy is greater than 70 years.  
+
+```{r, fig.width=4, fig.height=3, fig.align= 'center'}
+ggplot(data = eu_subs, aes(x=avgGDP, y=avgLE)) + geom_point() + theme_bw()+
+  geom_vline(xintercept = 20000) + geom_hline(yintercept=70)+ labs(x="Avg GDP/capita", y="Avg LifeExp")
+eu1 <- eu_subs %>% 
+  filter(avgGDP > 20000, avgLE > 70) %>%
+   select(country, avgLE, avgGDP)
+```
+
+>##### In the plot above, the horizontal and vertical lines represent the filter condition (Avg LifeExp > 70 & Avg GDP > 20000). Only seven countries meet our filter condition and lie in the desired first quadrant. Now, we will export all data associated with these countries. 
+
+```{r}
+eu1
+eu_gap <- cont_dropped %>% 
+  filter(country %in% eu1$country ) %>% droplevels()
+```
+
+>##### **Exporting & Importing-** 
+>##### Firstly, writing out data in the form of a csv file to current working directory using here::here and then reading back the data for further analysis. Using 'write_csv()/read_csv()' functions for export/import, my newly created file (eu_gap.csv) successfully survives the round-trip journey.
+
+```{r}
+write_csv(eu_gap, here::here("eu_gap.csv"))
+eu_gap <- read_csv(here::here("eu_gap.csv"))
+```
+
+>##### **Mapping quantitative x (year) and quantitative y (gdpPercap) from dataset 'eu_gap'-**
+>##### Plotting GDP per capita against year, the factor (country) provides the color of the trend line. In Fig E, the legends do not appear in the same order as the data.
+>##### Using fct_reorder2(), we map countries to another aesthetic, i.e. color in Fig F. By using the function, we can see that the legends now are in the same order as the data. 
+>##### Again, as one would expect all seven european countries show an increasing trend in per capita GDP over the years with Norway achieving the highest economic growth.
+
+```{r, fig.width=12}
+eu_1 <- ggplot(eu_gap, aes(x = year, y = gdpPercap, color = country)) +
+  geom_line() + geom_point() +
+  labs(x="Year", y="GDP per capita", title = "Unordered", color = "country") +
+  theme_bw()
+
+eu_2 <- ggplot(eu_gap, aes(x = year, y = gdpPercap, 
+                           color = fct_reorder2(country, year, gdpPercap))) +
+  geom_line() + 
+  geom_point()+labs(x="Year", y="GDP per capita",
+                    title = "Ordered(country, year, GDP per capita)", color = "country")+
+  theme_bw()
+
+plot_grid(eu_1, eu_2, labels = c('E', 'F'))
+```
+
+>### **Exercise 4- Visualization design**
+
+>#### **Previous attempt (Fig G & I)-** 
+>##### In hw02, I created bubble charts to display three dimensions - Gdp per capita, life expectancy and year for least developed (Angola & Cambodia) and developed countries (Australia & Norway) to see how socio-economic development varies in different regions. Fig G & I represent my previous attempt where I had made four plots for each country to represent the above mentioned dimensions. **(Below I have shown just one plot from each region. For all four bubble plots, see this [link](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-jgubc/hw02/hw02_html.html))**  
+
+```{r}
+Angola <- gapminder %>% 
+  filter(country == "Angola") %>% 
+  ggplot(aes(x= year, y= gdpPercap, size = lifeExp)) +
+  geom_point(shape= 21, color= "black", fill= "green") + labs(x= "Year", y= "GDP/Capita", 
+       title = "Bubble chart - Angola")
+
+Australia <- gapminder %>% 
+  filter(country == "Australia") %>% 
+  ggplot(aes(x= year, y= gdpPercap, size = lifeExp)) +
+  geom_point(shape= 21, color= "black", fill= "red") +
+  labs(x= "Year", y= "GDP/Capita", 
+       title = "Fig 3: Bubble chart - Australia")
+```
+
+>#### **Revised attempt (Fig H & J)-** 
+>##### In the new attempt, I am plotting all four countries in one graph to coherently visualize the trends of interested variables (lifeExp & gdpPercap) and also separating the dimensions such that each dimension has its own graph. Ordering countries by color makes the legends appear in the same order as the data in the plot. Additionally, I have manually assigned colors to each country to maintain consistency in output in both plots (Fig H & J).
+
+```{r}
+am_countries <- c('Angola', 'Cambodia','Australia', 'Norway')
+am <- gapminder %>% filter(country %in% am_countries) %>% droplevels()
+
+am_1 <- ggplot(am, aes(x = year, y = lifeExp, color = fct_reorder2(country, year, lifeExp)))+
+  geom_line() + labs(x= "Year", y= "Life Expectancy", title = "Line Chart - Life Expectancy") +
+  scale_colour_manual(name="Country",values=c(Angola="darkgreen", 
+                                              Cambodia="orange", 
+                                              Australia="red", 
+                                              Norway = "blue")) + geom_point() + theme_bw()
+
+am_2 <-ggplot(am, aes(x = year, y = gdpPercap, color = fct_reorder2(country, year, gdpPercap)))+
+  geom_line() + labs(x= "Year", title = "Line Chart - GDP per capita") +
+  geom_point() +
+  scale_y_log10("GDP per capita", labels = scales::dollar_format()) +
+  scale_colour_manual(name="Country",values=c(Angola="darkgreen", 
+                                              Cambodia="orange", 
+                                              Australia="red", 
+                                              Norway = "blue"))+ theme_bw()
+```
+
+>#### **Visual Differences-** 
+>##### With bubble charts, it is challenging to visually estimate the impact size of one variable on another as shape sizes differ minimally and it is further more difficult to synthesize information of four bubble plots. However, with trend lines of all countries in one plot it becomes visually comfortable to summarize information. One easily notes that least developed countries are significantly lacking behind in socio-economic growth when compared to developed countries. Angola (green) and Cambodia (orange) occupy the bottom half of the plot whereas Australia (red) and Norway (blue) occupy the top half of the plot representing differences in overall growth in both indicators over time.
+
+```{r, fig.width= 12, fig.height=8}
+plot_grid(Angola, am_1, Australia, am_2, labels = c('G', 'H', 'I', 'J'))
+```
+
+>### **Exercise 5: Writing figures to file**
+>#### **Producing a new plot to save-**
+>##### Here, firstly I am filtering out a subset of data to plot - countries in Asia whose average per capita GDP is greater than $15,000. Plotting the filtered dataset and assigning the plot to a object called 'plotsave'.
+
+```{r}
+data5 <- gapminder %>% 
+  filter(continent == 'Asia') %>% 
+  group_by(country) %>%
+  summarise(avgGDP = mean(gdpPercap)) %>% 
+  filter(avgGDP > 15000) 
+
+plotsave <- gapminder %>% 
+  filter(country %in% data5$country) %>% droplevels() %>%
+  ggplot(aes(x = year, y = gdpPercap, color = fct_reorder2(country, year, gdpPercap))) +
+  geom_line() + geom_point() + 
+  scale_y_log10("GDP per capita", labels = scales::dollar_format()) +
+  labs(x="Year", 
+       title = "Asia -Ordered(country, year, GDP per capita)", color = "country") + 
+  theme_bw()
+```
+
+>#### **Saving new plot using ggsave() -**
+
+```{r}
+ggsave(here::here("plotEX5.png"), plot=plotsave)
+```
+
+>#### **Loading the plot and embedding into this report below**
+
+![](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-jgubc/hw05/plotEX5.png)
+
+>#### **Changing plot display settings -**
+>##### Using the previous plot, now I am changing the width and height of the plot and saving it again using ggsave().
+
+```{r}
+ggsave(here::here("plotEX5_1.png"), plot = plotsave, 
+       width = 6, height = 3)
+```
+
+>#### **Loading the modified plot and embedding below**
+
+![](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-jgubc/hw05/plotEX5_1.png)
+
+>#### The modified plot looks better than the original one as it conveys the same information in a compact form, hence making it easier to visually follow the information conveyed by the graph.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
